@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d0d0d">
+  <title>Raj's Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #0ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    .calculator {
+      border: 2px solid #0ff;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0px 0px 25px #0ff, 0px 0px 50px #0ff;
+    }
+
+    .display {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 10px;
+      font-size: 1.5em;
+      text-align: right;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      background: #111;
+      color: #0ff;
+      box-shadow: inset 0 0 10px #0ff;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .button {
+      padding: 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background-color: #222;
+      color: #0ff;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0px 4px 15px rgba(0, 255, 255, 0.5);
+    }
+
+    .button:hover {
+      background-color: #0ff;
+      color: #000;
+    }
+
+    .special {
+      background-color: #ff4081;
+      color: #fff;
+    }
+
+    .special:hover {
+      background-color: #f50057;
+    }
+
+    button.theme-toggle {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dark body {
+      background-color: #ffffff;
+      color: #000;
+    }
+
+    .dark .calculator {
+      background-color: #fff;
+      border-color: #00bcd4;
+      box-shadow: 0px 0px 25px #00bcd4, 0px 0px 50px #009688;
+    }
+
+    .dark .display {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .dark .button {
+      background: #00bcd4;
+      color: #fff;
+    }
+
+    .dark .button:hover {
+      background: #0097a7;
+    }
+
+    .dark .special {
+      background: #8bc34a;
+    }
+
+    .dark .special:hover {
+      background: #689f38;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="calculator">
+    <input type="text" id="display" class="display" disabled>
+    <div class="buttons">
+      <button class="button">7</button>
+      <button class="button">8</button>
+      <button class="button">9</button>
+      <button class="button">/</button>
+      <button class="button">4</button>
+      <button class="button">5</button>
+      <button class="button">6</button>
+      <button class="button">*</button>
+      <button class="button">1</button>
+      <button class="button">2</button>
+      <button class="button">3</button>
+      <button class="button">-</button>
+      <button class="button">0</button>
+      <button class="button">.</button>
+      <button class="button special">C</button>
+      <button class="button">+</button>
+      <button class="button" style="grid-column: span 4; background: #00e676; color: #000;">=</button>
+    </div>
+  </div>
+
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.button');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const value = button.textContent;
+        if (value === '=') {
+          try {
+            display.value = eval(display.value);
+          } catch {
+            display.value = 'Error';
+          }
+        } else if (value === 'C') {
+          display.value = '';
+        } else {
+          display.value += value;
+        }
+      });
+    });
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+  </script>
+</body>
+
+</html>
